@@ -5,6 +5,8 @@ import com.twilio.rest.api.v2010.account.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
+
 @Slf4j
 @Service
 public class WriteMessage {
@@ -16,7 +18,7 @@ public class WriteMessage {
                         messageText)
                 .create();
 
-        log.info("message was sent: " + message.getSid());
+        log.info("message was sent: " + message.getBody() + " in: " + ZonedDateTime.now());
         return message;
     }
 }
