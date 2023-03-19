@@ -46,21 +46,28 @@ public class ChooseSeatBot implements CommandLineRunner {
 
                 // If the latest message is different from the last message,
                 // print the message and send Response
-                if (lastMessage==null || !latestMessage.getBody().equals(lastMessage.getBody())) {
+                if (lastMessage == null || isNotTheSameMessage(latestMessage, lastMessage)) {
                     log.info(latestMessage.getBody());
                     switch (latestMessage.getBody()) {
                         case "1":
                         case "2":
                         case "3":
                             writeMessageService.writeMessage("Please choose Favorite area in Floor-" + latestMessage.getBody().trim()
-                                    + ": \n▫️A\n▫️B\n▫️C\n▫️D");
+                                    + ": " +
+                                    "\nA. \uD83D\uDFE1 (yellow)" +
+                                    "\nB. \uD83D\uDD35 (blue)" +
+                                    "\nC. \uD83D\uDD34 (red)" +
+                                    "\nD. \uD83D\uDFE3 (purple)");
                             break;
                         case "A":
                         case "B":
                         case "C":
                         case "D":
-                            writeMessageService.writeMessage("The available seats there are: \nSeat a1\nSeat b3\nSeat c7" +
-                                    "\n\n"+ "‼️Please type the seat you want including the word \"Seat\" at the    beginning");
+                            writeMessageService.writeMessage("The available seats there are: " +
+                                    "\nSeat " + latestMessage.getBody() + "1" +
+                                    "\nSeat " + latestMessage.getBody() + "3" +
+                                    "\nSeat " + latestMessage.getBody() + "7" +
+                                    "\n\n" + "‼️Please type the seat you want including the word \"Seat\" at the    beginning");
                             break;
                         default:
                             if (latestMessage.getBody().contains("Seat")) {
@@ -82,5 +89,9 @@ public class ChooseSeatBot implements CommandLineRunner {
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean isNotTheSameMessage(Message msg1, Message msg2) {
+        return !(msg1.getBody().equals(msg2.getBody()));
     }
 }
