@@ -74,13 +74,16 @@ public class ChooseSeatBot implements CommandLineRunner {
                             selectedArea= latestMessage.getBody();
                             writeMessageService.writeMessage("The available seats in floor number: "+ selectedFloor+" and area: "+selectedArea+" are:"+
                                     //\nSeat a1\nSeat b3\nSeat c7" +
-                                    "\nSeat " + bussinessService.getTop3Seats(selectedFloor,selectedArea) +
-//
+                                    "\nSeats " + bussinessService.getTop3Seats(selectedFloor,selectedArea) +
+
+//  "\n\n"+ "‼️Please choose the seat you want ...");
                                     "\n\n"+ "‼️Please type the seat you want including the word \"Seat\" at the    beginning");
                             break;
                         default:
                             if (latestMessage.getBody().contains("Seat")) {
-                                writeMessageService.writeMessage(latestMessage.getBody() + " was Occupied Successfully," +
+                                String seatNumber="";
+                                seatNumber=latestMessage.getBody().substring(5);
+                                writeMessageService.writeMessage(seatNumber + " was Occupied Successfully," +
                                         "\nIt will be yours until the end of the day, \nHave a nice day. \uD83C\uDF3B");
                             } else {
                                 writeMessageService.writeMessage("Not Available option, Please try again");
