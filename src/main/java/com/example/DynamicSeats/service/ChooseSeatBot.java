@@ -1,16 +1,18 @@
 package com.example.DynamicSeats.service;
 
-import com.example.DynamicSeats.constnats.TwilioConsts;
+import com.example.DynamicSeats.constnats.TwilioParams;
 import com.twilio.base.ResourceSet;
 import com.twilio.rest.api.v2010.account.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -18,21 +20,28 @@ import java.util.List;
 public class ChooseSeatBot implements CommandLineRunner {
 
     private final WriteMessage writeMessageService;
+    private final BussinessService bussinessService;
+//    @Autowired
+//    private final table1Repository table1Repository;
 
     @Override
     public void run(String... args) throws Exception {
-        writeMessageService.writeMessage("Hello " + TwilioConsts.WHATSAPP_USER_NAME + " \uD83E\uDDD1\u200D\uD83D\uDCBC" + "\nFrom Department הפצת מידע ללקוחות" +
+        writeMessageService.writeMessage("Hello " +
+                 bussinessService.getEmployeeName(TwilioParams.PHONE_NUMBER) +
+                " \uD83E\uDDD1\u200D\uD83D\uDCBC" + "\nFrom Department " +    bussinessService.getEmployeeDepartment(TwilioParams.PHONE_NUMBER) +
                 ",\nWelcome to the seats choose bot \n" +
                 "Please Choose on which Floor do you want to seat today? \uD83D\uDCBA" +
-                "\n1️⃣ \n2️⃣ \n3️⃣");
+                "\n1️⃣ - Quiet floor \n2️⃣ - Open space \n3️⃣ - Cubical \n");
 
         Message lastMessage = null;
         ZonedDateTime currentZonedDateTime = ZonedDateTime.now();
 
+        Integer selectedFloor=1;
+        String selectedArea="A";
         // Continuously fetch and print new messages
         while (true) {
             ResourceSet<Message> messages = Message.reader()
-                    .setTo(TwilioConsts.WHATSAPP_NUMBER)
+                    .setTo(TwilioParams.WHATSAPP_NUMBER)
                     .setDateSentAfter(currentZonedDateTime)
                     .read();
 
@@ -50,8 +59,11 @@ public class ChooseSeatBot implements CommandLineRunner {
                     log.info(latestMessage.getBody());
                     switch (latestMessage.getBody()) {
                         case "1":
+
                         case "2":
+
                         case "3":
+                            selectedFloor= Integer.valueOf(latestMessage.getBody());
                             writeMessageService.writeMessage("Please choose Favorite area in Floor-" + latestMessage.getBody().trim()
                                     + ": \n▫️A\n▫️B\n▫️C\n▫️D");
                             break;
@@ -59,7 +71,11 @@ public class ChooseSeatBot implements CommandLineRunner {
                         case "B":
                         case "C":
                         case "D":
-                            writeMessageService.writeMessage("The available seats there are: \nSeat a1\nSeat b3\nSeat c7" +
+                            selectedArea= latestMessage.getBody();
+                            writeMessageService.writeMessage("The available seats in floor number: "+ selectedFloor+" and area: "+selectedArea+" are:"+
+                                    //\nSeat a1\nSeat b3\nSeat c7" +
+                                    "\nSeat " + bussinessService.getTop3Seats(selectedFloor,selectedArea) +
+//
                                     "\n\n"+ "‼️Please type the seat you want including the word \"Seat\" at the    beginning");
                             break;
                         default:
@@ -77,7 +93,7 @@ public class ChooseSeatBot implements CommandLineRunner {
             }
             // Wait before checking for new messages again
             try {
-                Thread.sleep(TwilioConsts.DELAY_MS);
+                Thread.sleep(TwilioParams.DELAY_MS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

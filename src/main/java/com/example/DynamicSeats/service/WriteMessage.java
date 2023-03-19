@@ -1,6 +1,6 @@
 package com.example.DynamicSeats.service;
 
-import com.example.DynamicSeats.constnats.TwilioConsts;
+import com.example.DynamicSeats.constnats.TwilioParams;
 import com.twilio.rest.api.v2010.account.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,8 +13,8 @@ public class WriteMessage {
 
     public Message writeMessage(String messageText){
         Message message = Message.creator(
-                        new com.twilio.type.PhoneNumber(TwilioConsts.TO_PHONE_NUMBER),
-                        new com.twilio.type.PhoneNumber(TwilioConsts.FROM_PHONE_NUMBER),
+                        new com.twilio.type.PhoneNumber(TwilioParams.TO_PHONE_NUMBER),
+                        new com.twilio.type.PhoneNumber(TwilioParams.FROM_PHONE_NUMBER),
                         messageText)
                 .create();
 

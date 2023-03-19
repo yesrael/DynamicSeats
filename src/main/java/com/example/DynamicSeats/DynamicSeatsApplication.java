@@ -3,8 +3,10 @@ package com.example.DynamicSeats;
 import com.example.DynamicSeats.service.ChooseSeatBot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = "com.example.DynamicSeats")
 public class DynamicSeatsApplication {
 
 
